@@ -1,11 +1,20 @@
 require 'spec_helper'
 
+require 'facets/enumerable'
+
 class SimpleRegex
   def initialize(expression)
     @expression = expression
   end
 
   def matches?(string)
+    string.chars.to_a.each_index do |index|
+      return true if matches_string?(string[index..-1])
+    end
+    false
+  end
+
+  def matches_string?(string)
     @expression.chars.each_with_index do |element, index|
       return false unless element == string[index]
     end
@@ -30,20 +39,28 @@ describe SimpleRegex do
   context "multiple characters" do
     let(:regex_body) { "abc" }
 
-    it "matches the same character" do
-      regex.should match("abc")
-    end
+    context "match at the start of the string" do
+      it "matches the same character" do
+        regex.should match("abc")
+      end
     
-    it "doesn't match a different character" do
-      regex.should_not match("axc")
-    end
+      it "doesn't match a different character" do
+        regex.should_not match("axc")
+      end
 
-    it "matches a string that contains extra characters at the end" do
-      regex.should match("abcd")
+      it "matches a string that contains extra characters at the end" do
+        regex.should match("abcd")
+      end
+    
+      it "doesn't match a string that is too short" do
+        regex.should_not match("ab")
+      end      
     end
     
-    it "doesn't match a string that is too short" do
-      regex.should_not match("ab")
+    context "match mid-way through the string" do
+      it "matches a substring" do
+        regex.should match("xyzabc")
+      end
     end
   end
 end
