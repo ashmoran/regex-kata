@@ -22,45 +22,28 @@ class SimpleRegex
 end
 
 describe SimpleRegex do
-  let(:regex) { SimpleRegex.new(regex_body) }
+  subject { SimpleRegex.new(regex_body) }
 
   context "single character" do
     let(:regex_body) { "a" }
 
-    it "matches the same character" do
-      regex.should match("a")
-    end
-    
-    it "doesn't match a different character" do
-      regex.should_not match("b")
-    end
+    it { should match("a") }
+    it { should_not match("b") }
   end
 
   context "multiple characters" do
     let(:regex_body) { "abc" }
 
     context "match at the start of the string" do
-      it "matches the same character" do
-        regex.should match("abc")
-      end
-    
-      it "doesn't match a different character" do
-        regex.should_not match("axc")
-      end
+      it { should match("abc") }
+      it { should_not match("axc") }
 
-      it "matches a string that contains extra characters at the end" do
-        regex.should match("abcd")
-      end
-    
-      it "doesn't match a string that is too short" do
-        regex.should_not match("ab")
-      end      
+      it { should match("abcd") }
+      it { should_not match("ab") }
     end
     
     context "match mid-way through the string" do
-      it "matches a substring" do
-        regex.should match("xyzabc")
-      end
+      it { should match("xyzabc") }
     end
   end
 end
